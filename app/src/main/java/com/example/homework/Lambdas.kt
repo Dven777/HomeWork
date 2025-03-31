@@ -8,7 +8,12 @@ fun main() {
     println(Lambdas3().processNumbers(numbers))
     val lambdas4 = Lambdas4()
     println(lambdas4.greet("David"))
-    println()
+    val test5 = Lambdas5()
+    println(test5.demonstrateCounter())
+    val test6 = Lambdas6()
+    println(test6.getSquaresOfEvenNumbers(numbers))
+
+
 }
 
 /*
@@ -107,3 +112,35 @@ class Lambdas5 {
         )
     }
 }
+/*
+ * Задача 6: Функция с несколькими лямбдами
+ *
+ * Создайте функцию, которая принимает список чисел и две лямбда-функции:
+ * - первая лямбда определяет, нужно ли обрабатывать число
+ * - вторая лямбда выполняет преобразование числа
+ *
+ * Функция должна применить преобразование только к тем числам, которые удовлетворяют условию,
+ * и вернуть список результатов.
+ */
+class Lambdas6 {
+    fun processWithCondition(
+        numbers: List<Int>,
+        condition: (Int) -> Boolean,
+        transform: (Int) -> Int
+    ): List<Int> {
+        var result: MutableList<Int> = mutableListOf()
+        for (number in numbers) {
+            if (condition(number)) {
+                result.add(transform(number))
+            }
+        }
+        return result
+    }
+        fun getSquaresOfEvenNumbers(numbers: List<Int>): List<Int> {
+            return processWithCondition(
+               numbers,
+                condition = {it % 2 == 0},
+                transform = { it * it }
+            )
+        }
+    }
