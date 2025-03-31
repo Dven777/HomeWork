@@ -12,6 +12,8 @@ fun main() {
     println(test5.demonstrateCounter())
     val test6 = Lambdas6()
     println(test6.getSquaresOfEvenNumbers(numbers))
+    val test7 = Lambdas7()
+    println(test7.testComposition(3))
 
 
 }
@@ -144,3 +146,28 @@ class Lambdas6 {
             )
         }
     }
+/*
+ * Задача 7: Композиция функций
+ *
+ * Создайте функцию, которая принимает две функции и возвращает их композицию.
+ * Композиция функций f и g - это функция h, такая что h(x) = f(g(x)).
+ *
+ * Используйте эту функцию для создания композиции, которая удваивает число и затем прибавляет 1.
+ */
+class Lambdas7 {
+    fun <A, B, C> compose(f: (B) -> C, g: (A) -> B): (A) -> C {
+       return { x -> f(g(x)) }
+    }
+
+    fun createDoubleAndAddOne(): (Int) -> Int {
+        val double = {x: Int -> x * 2}
+        val addOne = {x: Int -> x + 1}
+        return compose(double, addOne)
+    }
+
+    fun testComposition(x: Int): Int {
+        val compose = createDoubleAndAddOne()
+        return compose(x)
+
+    }
+}
