@@ -14,7 +14,12 @@ fun main() {
     println(test6.getSquaresOfEvenNumbers(numbers))
     val test7 = Lambdas7()
     println(test7.testComposition(3))
-
+    val test8 = Lambdas8()
+    println(test8.calculateProduct(numbers))
+    println(test8.findMaximum(numbers))
+    println(test8.joinToString(numbers))
+    val test9 = Lambdas9()
+    println(test9.createPerson())
 
 }
 
@@ -43,9 +48,10 @@ class Lambdas2 {
     fun filterStrings(strings: List<String>, predicate: (String) -> Boolean): List<String> {
         return strings.filter(predicate)
     }
+
     fun getLongStrings(strings: List<String>): List<String> {
         return filterStrings(strings)
-            {it.length > 5}
+        { it.length > 5 }
     }
 }
 
@@ -66,6 +72,7 @@ class Lambdas3 {
             .reduce { acc, num -> acc + num }
     }
 }
+
 /*
  * Задача 4: Лямбда с получателем
  *
@@ -89,6 +96,7 @@ class Lambdas4 {
         }
     }
 }
+
 /*
  * Задача 5: Замыкания в лямбдах
  *
@@ -114,6 +122,7 @@ class Lambdas5 {
         )
     }
 }
+
 /*
  * Задача 6: Функция с несколькими лямбдами
  *
@@ -128,7 +137,7 @@ class Lambdas6 {
     fun processWithCondition(
         numbers: List<Int>,
         condition: (Int) -> Boolean,
-        transform: (Int) -> Int
+        transform: (Int) -> Int,
     ): List<Int> {
         var result: MutableList<Int> = mutableListOf()
         for (number in numbers) {
@@ -138,14 +147,16 @@ class Lambdas6 {
         }
         return result
     }
-        fun getSquaresOfEvenNumbers(numbers: List<Int>): List<Int> {
-            return processWithCondition(
-               numbers,
-                condition = {it % 2 == 0},
-                transform = { it * it }
-            )
-        }
+
+    fun getSquaresOfEvenNumbers(numbers: List<Int>): List<Int> {
+        return processWithCondition(
+            numbers,
+            condition = { it % 2 == 0 },
+            transform = { it * it }
+        )
     }
+}
+
 /*
  * Задача 7: Композиция функций
  *
@@ -156,12 +167,12 @@ class Lambdas6 {
  */
 class Lambdas7 {
     fun <A, B, C> compose(f: (B) -> C, g: (A) -> B): (A) -> C {
-       return { x -> f(g(x)) }
+        return { x -> f(g(x)) }
     }
 
     fun createDoubleAndAddOne(): (Int) -> Int {
-        val double = {x: Int -> x * 2}
-        val addOne = {x: Int -> x + 1}
+        val double = { x: Int -> x * 2 }
+        val addOne = { x: Int -> x + 1 }
         return compose(double, addOne)
     }
 
@@ -169,5 +180,88 @@ class Lambdas7 {
         val compose = createDoubleAndAddOne()
         return compose(x)
 
+    }
+}
+
+/*
+ * Задача 8: Функция fold
+ *
+ * Используйте функцию fold для реализации следующих операций над списком целых чисел:
+ * 1. Найти произведение всех чисел
+ * 2. Найти максимальное число
+ * 3. Объединить числа в строку через запятую
+ */
+class Lambdas8 {
+    fun calculateProduct(numbers: List<Int>): Int {
+        return numbers.fold(1) { acc, num -> acc * num }
+    }
+
+    fun findMaximum(numbers: List<Int>): Int {
+        var max = 0
+        return numbers.fold(Int.MIN_VALUE) { max, num -> if (num > max) num else max }
+    }
+
+    fun joinToString(numbers: List<Int>): String {
+        return numbers.fold("") { acc, num -> if (acc.isEmpty()) num.toString() else "$acc, $num" }
+    }
+}
+
+/*
+ * Задача 9: Функция apply
+ *
+ * Используйте функцию apply для создания и настройки объекта Person.
+ * Класс Person должен иметь свойства: имя, возраст и список навыков.
+ */
+class Lambdas9 {
+    data class Person(
+        var name: String = "",
+        var age: Int = 0,
+        val skills: MutableList<String> = mutableListOf(),
+    )
+
+    fun createPerson(): Person {
+        return Person().apply {
+            name = "Dven"
+            age = 28
+            skills.add("Playboy")
+            skills.add("Big dick")
+
+        }
+    }
+}
+
+/*
+ * Задача 10: Функциональная обработка коллекций
+ *
+ * Создайте класс Student с полями: имя, возраст и список оценок.
+ * Реализуйте функции для работы со списком студентов:
+ * 1. Найти средний балл каждого студента
+ * 2. Найти студентов с средним баллом выше заданного порога
+ * 3. Сгруппировать студентов по возрасту
+ * 4. Найти студента с наивысшим средним баллом
+ */
+class Lambdas10 {
+    data class Student(
+        val name: String,
+        val age: Int,
+        val grades: List<Int>,
+    ) {
+        fun averageGrade(): Double = grades.average()
+    }
+
+    fun getAverageGrades(students: List<Student>): Map<String, Double> {
+        return students.associate { it.name to it.averageGrade() }
+    }
+
+    fun getTopStudents(students: List<Student>, threshold: Double): List<Student> {
+        return students.filter { it.averageGrade() > threshold }
+    }
+
+    fun groupByAge(students: List<Student>): Map<Int, List<Student>> {
+        return students.groupBy { it.age }
+    }
+
+    fun findBestStudent(students: List<Student>): Student? {
+        return students.maxByOrNull { it.averageGrade() }
     }
 }
